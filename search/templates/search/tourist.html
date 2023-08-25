@@ -1,0 +1,95 @@
+{% extends 'search/base.html' %}
+
+{% block main%}
+
+<section>
+    <h2>search settings</h2>
+    <a href="/search/tourist">show all tourists</a>
+    <br><br>
+    <form action="/search/tourist_search">
+        <div class="row">
+            <label>state: </label>JS
+            <label>city: </label>TZ
+            <label>district: </label>
+            <select name="district" id="select_id1" onchange="f()">
+                <option value="">select district</option>
+                    {% if sel_district == 'GG' %}
+                        <option value="GG" selected="true">GG</option>
+                    {% else %}
+                       <option value="GG">GG</option>
+                    {% endif %}
+
+                    {% if sel_district == 'HL' %}
+                        <option value="HL" selected="true">HL</option>
+                    {% else %}
+                       <option value="HL">HL</option>
+                    {% endif %}
+
+                    {% if sel_district == 'XH' %}
+                        <option value="XH" selected="true">XH</option>
+                    {% else %}
+                       <option value="XH">XH</option>
+                    {% endif %}
+            </select>
+        </div>
+        <br><br>
+        <a href="/search/tourist_price_sort">sort scenic spots by ticket asc</a><br>
+        <a href="/search/tourist_price_sort2">sort scenic spots by ticket desc</a><br>
+        <a href="/search/tourist_price_max">which spot with max price</a><br>
+        <a href="/search/tourist_price_min">which spot with min price</a><br>
+    </form>
+</section>
+
+<section>
+    <h2>result show</h2>
+    <div>
+        <table border="1">
+            <tr>
+                <th>tour_city</th>
+                <th>tour_district</th>
+                <th>tour_price</th>
+                <th>tour_open_time</th>
+                <th>tour_close_time</th>
+                <th>tour_area</th>
+                <th>tour_capacity</th>
+                <th>tour_build_date</th>
+            </tr>
+            {% if tour_list is not None %}
+            {% for item in tour_list %}
+            </tr>
+                <td>{{item.tour_city}}</td>
+                <td>{{item.tour_district}}</td>
+                <td>{{item.tour_price}}</td>
+                <td>{{item.tour_open_time}}</td>
+                <td>{{item.tour_close_time}}</td>
+                <td>{{item.tour_area}}</td>
+                <td>{{item.tour_capacity}}</td>
+                <td>{{item.tour_build_date}}</td>
+            </tr>
+            {% endfor %}
+            {% endif %}
+        </table>
+    </div>
+</section>
+
+<script type="text/javascript">
+    function f(){
+        obj = document.getElementById("select_id1")
+        d = obj.value;
+        for(i=0;i<obj.length;i++){
+            if(obj[i].value==d)
+                obj[i].selected = true;
+        }
+        const xhr = new XMLHttpRequest();
+        var params = "district=" + d;
+        xhr.onreadystatechange = function(){
+            if(xhr.readyState == 4 && xhr.status == 200) {
+                var html = xhr.responseText;
+                document.documentElement.innerHTML = html;
+            }
+        }
+        xhr.open("GET", 'tourist_by'+'?'+params, true);
+        xhr.send(params);
+    }
+</script>
+{% endblock %}

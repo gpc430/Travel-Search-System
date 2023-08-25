@@ -1,0 +1,95 @@
+{% extends 'search/base.html' %}
+
+{% block main%}
+
+<section>
+    <h2>search settings</h2>
+    <a href="/search/hotel">show all hotels</a>
+    <br><br>
+    <form action="/search/hotel_search">
+        <div class="row">
+            <label>state: </label>JS
+            <label>city: </label>TZ
+            <label>district: </label>
+            <select name="district" id="select_id1" onchange="f()">
+                <option value="">select district</option>
+                    {% if sel_district == 'GG' %}
+                        <option value="GG" selected="true">GG</option>
+                    {% else %}
+                       <option value="GG">GG</option>
+                    {% endif %}
+
+                    {% if sel_district == 'HL' %}
+                        <option value="HL" selected="true">HL</option>
+                    {% else %}
+                       <option value="HL">HL</option>
+                    {% endif %}
+
+                    {% if sel_district == 'XH' %}
+                        <option value="XH" selected="true">XH</option>
+                    {% else %}
+                       <option value="XH">XH</option>
+                    {% endif %}
+            </select>
+        </div>
+        <br><br>
+        <a href="/search/hotel_price_sort">sort hotels by price asc</a><br>
+        <a href="/search/hotel_house_max">which hotel with max house number</a><br>
+        <a href="/search/hotel_family_max">which hotel with max family house number</a><br>
+    </form>
+</section>
+
+<section>
+    <h2>result show</h2>
+    <div>
+        <table border="1">
+            <tr>
+                <th>hotel_city</th>
+                <th>hotel_district</th>
+                <th>hotel_price</th>
+                <th>hotel_star</th>
+                <th>hotel_house_n</th>
+                <th>hotel_single_n</th>
+                <th>hotel_double_n</th>
+                <th>hotel_family_n</th>
+            </tr>
+            {% if hotel_list is not None %}
+            {% for item in hotel_list %}
+            </tr>
+                <td>{{item.hotel_city}}</td>
+                <td>{{item.hotel_district}}</td>
+                <td>{{item.hotel_price}}</td>
+                <td>{{item.hotel_star}}</td>
+                <td>{{item.hotel_house_n}}</td>
+                <td>{{item.hotel_single_n}}</td>
+                <td>{{item.hotel_double_n}}</td>
+                <td>{{item.hotel_family_n}}</td>
+            </tr>
+            {% endfor %}
+            {% endif %}
+        </table>
+    </div>
+</section>
+
+<script type="text/javascript">
+    function f(){
+        obj = document.getElementById("select_id1")
+        d = obj.value;
+        for(i=0;i<obj.length;i++){
+            if(obj[i].value==d)
+                obj[i].selected = true;
+        }
+        const xhr = new XMLHttpRequest();
+        var params = "district="+d;
+        xhr.onreadystatechange = function()
+        {
+            if(xhr.readyState == 4 && xhr.status == 200) {
+                var html = xhr.responseText;
+                document.documentElement.innerHTML = html;
+            }
+        }
+        xhr.open("GET", 'hotel_by'+'?'+params, true);
+        xhr.send(params);
+    }
+</script>
+{% endblock %}
